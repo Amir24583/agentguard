@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>body{margin:0}</style>
+<title>AgentGuard</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;700&display=swap">
+<style>
+  /* Layout: one left-aligned reading column; the scan report is the hero exhibit, everything else stays quiet. */
+  :root {
+    --bg:#f3f5f9; --fg:#141a2b; --muted:#56607a; --line:#d5dae6; --card:#ffffff;
+    --accent:#2b3fd6; --on-accent:#ffffff; --term:#101527; --term-fg:#dfe4f3; --term-dim:#8d97b5;
+    --fail:#ff8f6b; --warn:#f0c35a; --pass:#7ad3a8;
+    --display:"Space Grotesk",system-ui,sans-serif; --body:Inter,system-ui,-apple-system,"Segoe UI",sans-serif; --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#0d111d; --fg:#e8ebf5; --muted:#9aa3bd; --line:#262d42; --card:#161b2c; --accent:#8fa0ff; --on-accent:#0d111d; --term:#070a14; color-scheme:dark } }
+  :root[data-theme="dark"] { --bg:#0d111d; --fg:#e8ebf5; --muted:#9aa3bd; --line:#262d42; --card:#161b2c; --accent:#8fa0ff; --on-accent:#0d111d; --term:#070a14; color-scheme:dark }
+  * { box-sizing:border-box }
+  body { background:var(--bg); color:var(--fg); font:17px/1.6 var(--body); }
+  main { max-width:720px; margin:0 auto; padding-block:48px 72px; padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px)); display:flex; flex-direction:column; gap:40px; }
+  section { display:flex; flex-direction:column; gap:12px; min-width:0 }
+  .brand { font:700 1rem var(--mono); letter-spacing:.02em; color:var(--accent) }
+  h1 { font:700 clamp(2rem,6vw,2.9rem)/1.1 var(--display); margin:0; text-wrap:balance; letter-spacing:-.02em }
+  h2 { font:700 1.3rem/1.25 var(--display); margin:0; text-wrap:balance }
+  p, ul { margin:0 } ul { padding-left:20px; display:flex; flex-direction:column; gap:6px }
+  .lead { color:var(--muted); font-size:1.1rem; max-width:60ch }
+  .row { display:flex; flex-wrap:wrap; gap:12px; align-items:center }
+  a.btn { display:inline-block; background:var(--accent); color:var(--on-accent); font-weight:600; text-decoration:none; padding:12px 20px; border-radius:8px }
+  a.ghost { color:var(--accent); font-weight:600 }
+  a:focus-visible { outline:3px solid var(--accent); outline-offset:3px }
+  pre { margin:0; background:var(--term); color:var(--term-fg); font:400 .82rem/1.65 var(--mono); padding:18px; border-radius:10px; overflow-x:auto }
+  pre .d { color:var(--term-dim) } pre .f { color:var(--fail); font-weight:700 } pre .w { color:var(--warn); font-weight:700 } pre .p { color:var(--pass); font-weight:700 }
+  small, .note { color:var(--muted); font-size:.88rem }
+  .plan { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:22px; display:flex; flex-direction:column; gap:10px }
+  .price { font:700 2rem/1 var(--display) } .price span { font:400 1rem var(--body); color:var(--muted) }
+  code { font-family:var(--mono); font-size:.9em }
+</style>
+</head>
+<body>
+<main>
+  <section>
+    <div class="brand">agentguard</div>
+    <h1>Find out if your AI agent is safe to ship, before someone else does.</h1>
+    <p class="lead">One GitHub Action or one API call checks your agent's tools and MCP servers for the mistakes that leak keys and hand strangers your shell. You get pass or fail, and a fix for every finding.</p>
+    <div class="row">
+      <a class="btn" href="https://buy.stripe.com/dRm4gzdoud9d9f4eEM4Vy02">Get a founding spot, $19/mo</a>
+      <span>Or join the free waitlist: email <a class="ghost" href="mailto:amireias06@gmail.com?subject=AgentGuard%20waitlist">amireias06@gmail.com</a></span>
+    </div>
+    <small>In development. Founding spots are fully refundable until launch.</small>
+  </section>
+
+  <section>
+    <pre aria-label="Example scan report"><span class="d">$ agentguard scan ./mcp.json        # example output</span>
+
+<span class="f">FAIL</span>  secret-in-config      mcp.json:14
+      A live-format Stripe key sits in "env". Move it to a secret store and rotate it.
+<span class="f">FAIL</span>  open-server           servers.notes
+      Listens on 0.0.0.0 with no auth. Bind to 127.0.0.1 or require a token.
+<span class="f">FAIL</span>  hidden-instruction    servers.search → tool "lookup"
+      The tool description tells the model to read ~/.ssh. Remove or replace this server.
+<span class="w">WARN</span>  broad-permission      servers.files
+      Write access to "/" . Limit it to the project folder.
+<span class="w">WARN</span>  unpinned-package      servers.fetch
+      Runs "npx -y" with no version. Pin an exact version.
+<span class="p">PASS</span>  7 other checks
+
+<span class="d">3 failed · 2 warnings · exit code 1</span></pre>
+    <p class="note">This is a made-up example that shows the report format.</p>
+  </section>
+
+  <section>
+    <h2>What it checks</h2>
+    <ul>
+      <li><strong>Leaked secrets.</strong> API keys and tokens sitting in agent and MCP config files.</li>
+      <li><strong>Open servers.</strong> MCP servers reachable from the network with no login.</li>
+      <li><strong>Poisoned tools.</strong> Tool descriptions that carry hidden instructions for the model.</li>
+      <li><strong>Too much power.</strong> Tools with shell or whole-disk access the agent doesn't need.</li>
+      <li><strong>Unpinned packages.</strong> Servers that install whatever version is newest at run time.</li>
+    </ul>
+    <p class="note">Checks are fixed rules, so the same config always gets the same result, and your code is never sent to an AI model.</p>
+  </section>
+
+  <section>
+    <h2>How you'll use it</h2>
+    <pre><span class="d"># .github/workflows/agentguard.yml (planned)</span>
+on: [pull_request]
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: agentguard/scan@v1
+        with:
+          config: mcp.json</pre>
+    <p>A failed check blocks the pull request and comments with the fix. Prefer your own pipeline? Send the same file to the API and get the report back as JSON.</p>
+  </section>
+
+  <section class="plan">
+    <h2>Founding plan</h2>
+    <div class="price">$19 <span>per month, per repo, locked for life</span></div>
+    <ul>
+      <li>Every check above, on every pull request</li>
+      <li>New rules as new attacks appear</li>
+      <li>A say in what gets built first</li>
+    </ul>
+    <div class="row"><a class="btn" href="https://buy.stripe.com/dRm4gzdoud9d9f4eEM4Vy02">Get a founding spot</a></div>
+    <small>Limited to the first 25 repos. Cancel any time, and get a full refund any time before launch. AgentGuard checks for common, known mistakes. It can't promise your agent has no security problems.</small>
+  </section>
+
+  <section>
+    <h2>Who's building it</h2>
+    <p>I'm Amir, a cybersecurity student in California. I use Claude Code to help build AgentGuard, and I review every rule myself. Questions? Email <a class="ghost" href="mailto:amireias06@gmail.com">amireias06@gmail.com</a>.</p>
+  </section>
+</main>
+</body>
+</html>
