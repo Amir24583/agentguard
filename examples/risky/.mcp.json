@@ -1,0 +1,40 @@
+{
+  "mcpServers": {
+    "notes": {
+      "command": "python",
+      "args": [
+        "notes_server.py",
+        "--host",
+        "0.0.0.0"
+      ]
+    },
+    "files": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/"
+      ]
+    },
+    "remote": {
+      "command": "npx",
+      "args": [
+        "mcp-remote@0.1.15",
+        "http://mcp.example.org/sse"
+      ]
+    },
+    "postgres": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@acme/postgres-mcp@2.1.0"
+      ]
+    },
+    "fetch": {
+      "command": "uvx",
+      "args": [
+        "mcp-server-fetch"
+      ]
+    }
+  }
+}
