@@ -43,12 +43,13 @@
   <section>
     <div class="brand">agentguard</div>
     <h1>Find out if your AI agent is safe to ship, before someone else does.</h1>
-    <p class="lead">One GitHub Action or one API call checks your agent's tools and MCP servers for the mistakes that leak keys and hand strangers your shell. You get pass or fail, and a fix for every finding.</p>
+    <p class="lead">AgentGuard checks your agent's tools and MCP servers for the mistakes that leak keys and hand strangers your shell. The scanner is free and open source. The founding plan runs it on every pull request and posts the fixes for you.</p>
     <div class="row">
       <a class="btn" href="https://buy.stripe.com/00w3cvesy2uz3UK7ck4Vy03">Get a founding spot, $19/mo</a>
       <span>Or join the free waitlist: email <a class="ghost" href="mailto:amireias06@gmail.com?subject=AgentGuard%20waitlist">amireias06@gmail.com</a></span>
     </div>
-    <small>In development. Founding spots are fully refundable until launch.</small>
+    <span><a class="ghost" href="https://github.com/Amir24583/agentguard">Get the free scanner on GitHub</a></span>
+    <small>The scanner works today. Pull-request checks are in development, and founding spots are fully refundable until they launch.</small>
   </section>
 
   <section>
@@ -84,6 +85,11 @@
 
   <section>
     <h2>How you'll use it</h2>
+    <p><strong>Free, today.</strong> Run the scanner on your own machine. It needs Python and nothing else.</p>
+    <pre>pip install git+https://github.com/Amir24583/agentguard
+agentguard scan .        <span class="d"># check this repo</span>
+agentguard lock .        <span class="d"># approve today's tools; later changes fail the scan</span></pre>
+    <p><strong>Founding plan, in development.</strong> Add one step to GitHub and every pull request is checked. A failed check blocks the merge and comments with the fix.</p>
     <pre><span class="d"># .github/workflows/agentguard.yml (planned)</span>
 on: [pull_request]
 jobs:
@@ -91,17 +97,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: agentguard/scan@v1
-        with:
-          config: mcp.json</pre>
-    <p>A failed check blocks the pull request and comments with the fix. Prefer your own pipeline? Send the same file to the API and get the report back as JSON.</p>
+      - uses: agentguard/scan@v1</pre>
   </section>
 
   <section class="plan">
     <h2>Founding plan</h2>
     <div class="price">$19 <span>per month, per repo, locked for life</span></div>
     <ul>
-      <li>Every check above, on every pull request</li>
+      <li>Every check above, run automatically on every pull request</li>
+      <li>Fix comments posted right on the pull request</li>
       <li>New rules as new attacks appear</li>
       <li>A say in what gets built first</li>
     </ul>
